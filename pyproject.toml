@@ -26,6 +26,7 @@ classifiers = [
 
 [project.urls]
 "Homepage" = "https://github.com/GabDug/pdm-wheel"
+"Changelog" = "https://github.com/GabDug/pdm-wheel/blob/main/CHANGELOG.md"
 "Bug Tracker" = "https://github.com/GabDug/pdm-wheel/issues"
 
 [project.entry-points.pdm]

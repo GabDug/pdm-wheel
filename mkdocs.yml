@@ -11,10 +11,8 @@ theme:
     primary: purple
     accent: blue
   icon:
-    logo: material/math-integral-box
     # GitHub specific.
     repo: fontawesome/brands/github
-  favicon: static/math-integral-box.png
   features:
     - content.code.annotate
     - content.tabs.link
@@ -54,9 +52,9 @@ plugins:
             - https://docs.python.org/3.10/objects.inv
   # Autodoc configuration.
   # https://mkdocstrings.github.io/recipes/#automatic-code-reference-pages
-  - gen-files:
-      scripts:
-        - docs/gen_ref_pages.py
+  # - gen-files:
+  #     scripts:
+  #       - docs/gen_ref_pages.py
   - literate-nav:
       nav_file: SUMMARY.md
   # This plugin is used to validate URLs (including anchors).
@@ -65,13 +63,14 @@ plugins:
       # This is not enabled by default because this requires network I/O, so it is inherently not
       # exactly reproducible. For larger projects, this can also slow local build times.
       validate_external_urls: !ENV [HTMLPROOFER_VALIDATE_EXTERNAL_URLS, False]
-      raise_error: True
+      raise_error: true
+
 site_name: pdm-wheel
-copyright: Copyright &copy; 2022 Gabriel Dugny
+copyright: Copyright &copy; 2023 Gabriel Dugny
 # GitHub Specific Configuration.
 repo_name: pdm-wheel
 repo_url: https://github.com/GabDug/pdm-wheel
-edit_uri: edit/master/docs/user_guide/docs/
+edit_uri: edit/main/docs/user_guide/docs/
 nav:
   - index.md
   - Code Reference: reference/
