@@ -20,19 +20,19 @@ pdm-wheel requires Python >=3.10, and PDM >=2.4.1
 You can install the plugin directly by:
 
 ```bash
-$ pdm plugin add pdm-wheel
+pdm plugin add pdm-wheel
 ```
 
 If you have installed PDM with the recommended tool `pipx`, add this plugin by:
 
 ```bash
-$ pipx inject pdm pdm-wheel
+pipx inject pdm pdm-wheel
 ```
 
 Or if you have installed PDM with `pip install --user pdm`, install with `pip` to the user site:
 
 ```bash
-$ python -m pip install --user pdm-wheel
+python -m pip install --user pdm-wheel
 ```
 
 Otherwise, install `pdm-wheel` to the same place where PDM is located.
@@ -40,7 +40,13 @@ Otherwise, install `pdm-wheel` to the same place where PDM is located.
 ## Usage
 
 ```
-$ pdm pack [common-options] [pack-options]
+pdm wheel [common-options] [dependencies-selection-options] [wheel-options]
+```
+
+💡 Check the options for your version of `pdm wheel` with:
+
+```bash
+pdm wheel --help
 ```
 
 **Common Options:**
@@ -63,62 +69,57 @@ $ pdm pack [common-options] [pack-options]
 > Specify another path as the project root,
 > which changes the base of pyproject.toml and `__pypackages__`
 
-**Pack Options:**
+`-L LOCKFILE, --lockfile LOCKFILE`
 
-`-m MAIN, --main MAIN `
+> Specify another lockfile path. Default: `pdm.lock`. [env var: `PDM_LOCKFILE`]
 
-> Specify the console script entry point for
-> the zipapp
+**Dependencies Selection Options:**
 
-`-o OUTPUT, --output OUTPUT`
+`-G GROUP, --group GROUP`
 
-> Specify the output filename. By default the file name
-> will be inferred from the project name.
+> Select group of optional-dependencies or dev-dependencies (with `-d`). Can be supplied multiple times, use ":all" to include
+> all groups under the same species.
 
-`-c, --compress`
+`--no-default`
 
-> Compress files with the deflate method, no
-> compress by default
+> Don't include dependencies from the default group
 
-`--pyc, --compile`
+`-d, --dev`
 
-> Compile source into pyc files
+> Select dev dependencies
 
-`--no-py`
+`--prod, --production`
 
-> Remove the .py files in favor of .pyc files
+> Unselect dev dependencies
 
-`-i INTERPRETER, --interpreter INTERPRETER`
+**Wheel Options:**
 
-> The Python interpreter path, default: the
-> project interpreter
+`-w OUTPUT, --wheel-dir OUTPUT`
 
-
+> Specify the output directory. By default it is the current directory
 
 ## Examples
 
 ```bash
-# Save all dependencies (including dev deps) as wheels in the ./tmp folder
+# Save all dependencies (including dev deps) as wheels in the ./wheels folder
 pdm wheel -w wheels
-# Save all dev dependencies  as wheels in the ./tmp folder
-pdm wheel -w wheels --dev tmp
-# Save all non-dev dependencies as wheels in the ./tmp folder
-pdm wheel -w wheels --prod tmp
+# Save all dev dependencies  as wheels in the ./wheels folder
+pdm wheel -w wheels --dev
+# Save all non-dev dependencies as wheels in the ./wheels folder
+pdm wheel -w wheels --prod
 ```
 
 ## Caveats
 
-1. If the result zipapp contains binaries, it can only be deployed to the platforms with the same abi, any cross-abi usage of that app might expect a failure.
-2. Any console scripts except for what is given to `--main` will be lost.
-3. The .exe file is different from what is produced by `pyinstaller` in the way that it doesn't embed a Python interpreter. This means you have to install a Python with exactly the same version on the deployment platform.
-4. If you have code to run in your project, the project itself should be installed into `__pypackages__` as well. Make sure you have set a project name in `pyproject.toml`.
-
-## About executable zipapp
-
-By default, zipapp is created with `.pyz` suffix. On Windows, if you have associted `.pyz` files with Python program, you can run the app by double-clicking the file in the explorer. But if you create the app with `--exe` turn on, you can have a .exe file on Windows and an **executable** file
-on Unix-like systems, so that the app can be executed without a `python` command prefixing it and
-no matter you assoicated the file exensition properly or not.
+1. `pdm-wheel` does not check whether the wheels are already built.
+2. `pdm-wheel` does not empty the output directory before building wheels.
 
 ## Changelog
 
 See [CHANGELOG.md](https://github.com/frostming/pdm-wheel/blob/main/CHANGELOG.md)
+
+## Acknowledgements
+
+`pdm-wheel` is inspired by [`pip wheel`](https://pip.pypa.io/en/stable/cli/pip_wheel/).
+
+`pdm-wheel`'s structure is based on frostming's [`pdm-packer`](https://github.com/frostming/pdm-packer/)

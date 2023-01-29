@@ -107,3 +107,44 @@ extend-exclude = '''
   | tests/fixtures
 )/
 '''
+
+
+[tool.towncrier]
+package = "pdm_wheel"
+filename = "CHANGELOG.md"
+issue_format = "[#{issue}](https://github.com/GabDug/pdm-wheel/issues/{issue})"
+directory = "news/"
+start_string = "<!-- insertion marker -->"
+title_format = "[v{version}](https://github.com/GabDug/pdm-wheel/releases/tag/{version}) ({project_date})"
+template = "news/towncrier_template.md"
+underlines = "-~^"
+
+[[tool.towncrier.type]]
+directory = "feature"
+name = "Features & Improvements"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "bugfix"
+name = "Bug Fixes"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "doc"
+name = "Improved Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "dep"
+name = "Dependencies"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "removal"
+name = "Removals and Deprecations"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "misc"
+name = "Miscellany"
+showcontent = true
