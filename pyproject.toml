@@ -1,0 +1,109 @@
+[build-system]
+requires = ["pdm-pep517>=1.0.0"]
+build-backend = "pdm.pep517.api"
+
+[project]
+name = "pdm-wheel"
+dynamic = ["version"]
+description = "PDM plugin that save your requirements as wheels, similar to pip-wheel"
+authors = [{ name = "Gabriel Dugny", email = "pdm-wheel@dugny.me" }]
+dependencies = []
+requires-python = ">=3.10"
+readme = "README.md"
+license = { text = "MIT" }
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Typing :: Typed",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/GabDug/pdm-wheel"
+"Bug Tracker" = "https://github.com/GabDug/pdm-wheel/issues"
+
+[project.entry-points.pdm]
+pdm-wheel = "pdm_wheel:wheel_plugin"
+
+[tool]
+
+[tool.pdm]
+version = { source = "scm" }
+
+[tool.pdm.build]
+package-dir = "src"
+includes = ["src", "src/pdm_wheel"]
+
+[tool.pdm.scripts]
+release = "python -m tasks.release"
+test = "pytest tests/"
+doc = {shell = "cd docs && mkdocs serve", help = "Start the dev server for doc preview"}
+lint = "pre-commit run --all-files"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "black>=22.10.0",
+    "isort>=5.10.0",
+    "mypy>=0.991",
+    "pylint>=2.15.4",
+    "pytest>=7.2.0",
+    "pytest-cov>=4.0.0",
+    "pdm>=2.4.0",
+    "ruff>=0.0.237",
+    "towncrier~=19.2",
+    "parver>=0.4",
+]
+docs = [
+    "mkdocs>=1.4.1",
+    "mkdocs-material>=8.5.6",
+    "mkdocstrings[python]>=0.19.0",
+    "mkdocs-htmlproofer-plugin>=0.10.0",
+    "mkdocs-gen-files>=0.4.0",
+    "mkdocs-literate-nav>=0.5.0",
+    "mkdocs-git-revision-date-plugin>=0.3.2",
+    "mkdocs-include-markdown-plugin>=3.9.1",
+]
+
+
+[tool.ruff]
+exclude = [
+    ".git",
+    "tests/fixtures/*",
+    "env",
+    "dist",
+    "build",
+    "__pypackages__",
+]
+ignore = ["E501"]
+line-length = 88
+select = [
+    "E",
+    "F",
+    "W",
+    "TCH",
+    "I"
+]
+
+[tool.black]
+line-length = 88
+extend-exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | tests/fixtures
+)/
+'''
