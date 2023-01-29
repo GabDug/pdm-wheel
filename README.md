@@ -1,10 +1,10 @@
 # pdm-wheel
 
-[![Tests](https://github.com/GabDug/pdm-wheel/workflows/Tests/badge.svg)](https://github.com/GabDug/pdm-wheel/actions?query=workflow%3Aci)
+[![Tests](https://github.com/GabDug/pdm-wheel/actions/workflows/ci.yml/badge.svg)](https://github.com/GabDug/pdm-wheel/actions/workflows/ci.yml)
 [![pypi version](https://img.shields.io/pypi/v/pdm-wheel.svg)](https://pypi.org/project/pdm-wheel/)
 [![License](https://img.shields.io/pypi/l/pdm-wheel.svg)](https://pypi.python.org/pypi/pdm-wheel)
 [![Python version](https://img.shields.io/pypi/pyversions/ruff.svg)](https://pypi.python.org/pypi/pdm-wheel)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/GabDug/pdm-wheel/main.svg)](https://results.pre-commit.ci/latest/github/GabDug/pdm-wheel/main)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/GabDug/pdm-wheel/main.svg?badge_token=PzBISUnvTEeYahD7i22qiA)](https://results.pre-commit.ci/latest/github/GabDug/pdm-wheel/main?badge_token=PzBISUnvTEeYahD7i22qiA)
 [![pdm-managed](https://img.shields.io/badge/pdm-managed-blueviolet)](https://pdm.fming.dev)
 [![Ruff](https://img.shields.io/badge/ruff-lint-red)](https://github.com/charliermarsh/ruff)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
