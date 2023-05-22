@@ -13,7 +13,7 @@ A PDM plugin that save your requirements as wheels, similar to [`pip wheel`](htt
 
 ## Requirements
 
-pdm-wheel requires Python >=3.10, and PDM >=2.4.1
+pdm-wheel requires Python >=3.10, and PDM >=2.6.1
 
 ## Installation
 
@@ -48,49 +48,6 @@ pdm wheel [common-options] [dependencies-selection-options] [wheel-options]
 ```bash
 pdm wheel --help
 ```
-
-**Common Options:**
-
-`-h, --help`
-
-> show this help message and exit
-
-`-v, --verbose`
-
-> -v for detailed output and -vv for more detailed
-
-`-g, --global`
-
-> Use the global project, supply the project
-> root with `-p` option
-
-`-p PROJECT_PATH, --project PROJECT_PATH`
-
-> Specify another path as the project root,
-> which changes the base of pyproject.toml and `__pypackages__`
-
-`-L LOCKFILE, --lockfile LOCKFILE`
-
-> Specify another lockfile path. Default: `pdm.lock`. [env var: `PDM_LOCKFILE`]
-
-**Dependencies Selection Options:**
-
-`-G GROUP, --group GROUP`
-
-> Select group of optional-dependencies or dev-dependencies (with `-d`). Can be supplied multiple times, use ":all" to include
-> all groups under the same species.
-
-`--no-default`
-
-> Don't include dependencies from the default group
-
-`-d, --dev`
-
-> Select dev dependencies
-
-`--prod, --production`
-
-> Unselect dev dependencies
 
 **Wheel Options:**
 
