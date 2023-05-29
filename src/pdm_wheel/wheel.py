@@ -3,14 +3,15 @@ from __future__ import annotations
 import os
 import shutil
 from pathlib import Path
-from typing import TYPE_CHECKING, Iterable
+from typing import TYPE_CHECKING
 
 from pdm.cli.actions import check_lockfile, resolve_candidates_from_lockfile
 from pdm.cli.commands.base import BaseCommand
 from pdm.cli.filters import GroupSelection
 from pdm.cli.options import groups_group, lockfile_option
 from pdm.cli.utils import check_project_file
-from pdm.models.candidates import Candidate
+
+# from pdm.models.candidates import Candidate
 
 if TYPE_CHECKING:
     import argparse
@@ -19,7 +20,7 @@ if TYPE_CHECKING:
     from pdm.project.core import Project
 
 
-class WheelCommand(BaseCommand):
+class ExportWheelsCommand(BaseCommand):
     """PDM implementation of `pip wheel`
     Build Wheel archives for your requirements and dependencies, from your lockfile.
     """
