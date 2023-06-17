@@ -3,7 +3,7 @@
 [![Tests](https://github.com/GabDug/pdm-wheel/actions/workflows/ci.yml/badge.svg)](https://github.com/GabDug/pdm-wheel/actions/workflows/ci.yml)
 [![pypi version](https://img.shields.io/pypi/v/pdm-wheel.svg)](https://pypi.org/project/pdm-wheel/)
 [![License](https://img.shields.io/pypi/l/pdm-wheel.svg)](https://pypi.python.org/pypi/pdm-wheel)
-[![Python version](https://img.shields.io/pypi/pyversions/ruff.svg)](https://pypi.python.org/pypi/pdm-wheel)
+[![Python version](https://img.shields.io/pypi/pyversions/pdm-wheel.svg)](https://pypi.python.org/pypi/pdm-wheel)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/GabDug/pdm-wheel/main.svg?badge_token=PzBISUnvTEeYahD7i22qiA)](https://results.pre-commit.ci/latest/github/GabDug/pdm-wheel/main?badge_token=PzBISUnvTEeYahD7i22qiA)
 [![pdm-managed](https://img.shields.io/badge/pdm-managed-blueviolet)](https://pdm.fming.dev)
 [![Ruff](https://img.shields.io/badge/ruff-lint-red)](https://github.com/charliermarsh/ruff)
@@ -13,7 +13,7 @@ A PDM plugin that save your requirements as wheels, similar to [`pip wheel`](htt
 
 ## Requirements
 
-pdm-wheel requires Python >=3.10, and PDM >=2.6.1
+pdm-wheel requires Python >=3.10, and PDM >=2.7.4
 
 ## Installation
 
