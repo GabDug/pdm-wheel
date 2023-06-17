@@ -5,13 +5,16 @@ import subprocess
 import sys
 import zipfile
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
+from pdm.core import Core
+from pdm.project.core import Project
 from pdm.utils import cd
 
 
 @pytest.fixture(scope="module")
-def example_project(invoke, main):
+def example_project_no_lock(invoke, main):
     tmp_path = Path(__file__).parent / ".testing"
     if tmp_path.exists():
         shutil.rmtree(tmp_path)
@@ -19,7 +22,7 @@ def example_project(invoke, main):
     tmp_path.joinpath("app.py").write_text(
         "import requests\ndef main():\n    print(requests.__version__)\n"
     )
-    project = main.create_project(tmp_path)
+    project: Project = main.create_project(tmp_path)
     project.pyproject.set_data(
         {
             "project": {
@@ -35,117 +38,81 @@ def example_project(invoke, main):
         }
     )
     project.pyproject.write()
-    invoke(["install"], obj=project)
 
     return project
 
 
-# def test_pack_env_all_non_editable(example_project):
-#     with PackEnvironment(example_project) as env:
-#         env.prepare_lib_for_pack()
-#         for _, v in env.get_working_set().items():
-#             assert not is_editable(v)
+@pytest.fixture()
+# @pytest.fixture(scope="module")
+def example_project(tmp_path: Path):
+    # Load project from` fixtures`
+    # project = main.create_project()
+    # return project
+
+    # @pytest.fixture()
+    # def tmp_project(tmp_path: Path) -> Project:
+    shutil.copy2(Path(__file__).parent / "fixtures" / "pyproject.toml", tmp_path)
+    shutil.copy2(Path(__file__).parent / "fixtures" / "pdm.lock", tmp_path)
+    core = Core()
+    return core.create_project(tmp_path)
 
 
-def test_create_without_main_error(example_project, invoke):
-    result = invoke(["pack"], raising=False, obj=example_project)
-    assert result.exit_code != 0
+def test_create_main_error(example_project_no_lock: Project, invoke):
+    # Patch os.getcwd() to return the example project root
+    with cd(example_project_no_lock.root), patch(
+        "os.getcwd", return_value=example_project_no_lock.root
+    ):
+        # Make sure we are pwd is the example project root
+        assert os.getcwd() == example_project_no_lock.root
+
+        result = invoke(["wheel"], raising=False, obj=example_project_no_lock)
+
+        # Assert that the command failed
+        assert result.exit_code != 0
 
 
-def test_no_py_not_with_compile(example_project, invoke):
-    result = invoke(["pack", "--no-py"], raising=False, obj=example_project)
-    assert result.exit_code != 0
+# Test that locked packages are used
+def test_lockfile_matches(example_project: Project, invoke):
+    with cd(example_project.root), patch(
+        "os.getcwd", return_value=example_project.root
+    ):
+        # Make sure we are pwd is the example project root
+        assert os.getcwd() == example_project.root
+        print(os.getcwd())
+        example_project.core.main(["wheel"], obj=example_project)
+
+        # raise Exception("Not implemented")
+
+        # Assert that the lockfile matches the expected output
+        assert Path(example_project.root, "wheels").exists()
+
+        # Assert that lockfiles entries match the wheels created
+
+        # Assert we have exactly the rught number of wheels
 
 
-def test_create_normal_pyz(example_project, invoke, tmp_path):
-    with cd(tmp_path):
-        invoke(["pack", "-m", "app:main"], obj=example_project)
-    output = tmp_path / "test_app.pyz"
-    assert output.exists()
-    assert f"#!{example_project.python.executable}".encode() in output.read_bytes()
+# Test --group works
 
-    with zipfile.ZipFile(output) as zf:
-        namelist = zf.namelist()
-        assert "requests/__init__.py" in namelist
-        assert "urllib3/__init__.py" in namelist
-        assert "app.py" in namelist
-        assert not any(name.endswith(".pyc") for name in namelist)
-        assert not any(".dist-info" in name for name in namelist)
-
-        main = [
-            line.decode().rstrip()
-            for line in zf.open("__main__.py")
-            if not line.startswith(b"#")
-        ]
-        assert main == ["import app", "app.main()"]
-
-    subprocess.check_call([sys.executable, str(output)])
+# Test --dev
 
 
-def test_create_pyz_with_pyc(example_project, invoke, tmp_path):
-    with cd(tmp_path):
-        invoke(["pack", "-v", "-m", "app:main", "--compile"], obj=example_project)
-    output = tmp_path / "test_app.pyz"
-    assert output.exists()
+# test thats --helps works
+def test_help(example_project: Project, invoke):
+    """Test that the help message is correct."""
 
-    with zipfile.ZipFile(output) as zf:
-        namelist = zf.namelist()
-        assert "app.pyc" in namelist
-        assert "requests/__init__.pyc" in namelist
-        assert "requests/__init__.py" in namelist
-        assert "urllib3/__init__.pyc" in namelist
+    result = invoke(["wheel", "--help"], raising=False, obj=example_project)
 
+    # Assert that the command failed
+    assert result.exit_code == 0
 
-def test_create_pyz_without_py(example_project, invoke, tmp_path):
-    with cd(tmp_path):
-        invoke(
-            ["pack", "-v", "-m", "app:main", "--compile", "--no-py"],
-            obj=example_project,
-        )
-    output = tmp_path / "test_app.pyz"
-    assert output.exists()
-
-    with zipfile.ZipFile(output) as zf:
-        namelist = zf.namelist()
-        assert "app.pyc" in namelist
-        assert "requests/__init__.pyc" in namelist
-        assert "requests/__init__.py" not in namelist
-        assert "urllib3/__init__.pyc" in namelist
+    # Assert that the help message is correct
+    assert (
+        "Build Wheel archives for your requirements and dependencies, from your lockfile."
+        in result.output
+    )
 
 
-def test_pack_respect_console_script(example_project, invoke, tmp_path):
-    example_project.pyproject.metadata["scripts"] = {"app": "app:main"}
-    example_project.pyproject.write()
-    with cd(tmp_path):
-        invoke(["pack"], obj=example_project)
-    output = tmp_path / "test_app.pyz"
-    assert output.exists()
-
-    with zipfile.ZipFile(output) as zf:
-
-        main = [
-            line.decode().rstrip()
-            for line in zf.open("__main__.py")
-            if not line.startswith(b"#")
-        ]
-        assert main == ["import app", "app.main()"]
-
-    subprocess.check_call([sys.executable, str(output)])
+# Test default dirpath
 
 
-def test_pack_change_output_file(example_project, invoke, tmp_path):
-    output = tmp_path / "foo.pyz"
-    invoke(["pack", "-m", "app:main", "-o", str(output)], obj=example_project)
-
-    assert output.exists()
-    subprocess.check_call([sys.executable, str(output)])
-
-
-def test_pack_create_exe_file(example_project, invoke, tmp_path):
-    with cd(tmp_path):
-        invoke(["pack", "-m", "app:main", "--exe"], obj=example_project)
-    output = tmp_path / ("test_app.exe" if os.name == "nt" else "test_app")
-    assert output.exists()
-    assert output.stat().st_mode & stat.S_IEXEC
-
-    subprocess.check_call([str(output)])
+# Test command dirpath
