@@ -7,7 +7,9 @@ name = "pdm-wheel"
 dynamic = ["version"]
 description = "PDM plugin that save your requirements as wheels, similar to pip-wheel"
 authors = [{ name = "Gabriel Dugny", email = "pdm-wheel@dugny.me" }]
-dependencies = []
+dependencies = [
+    "pdm>=2.7.4",
+]
 requires-python = ">=3.10"
 readme = "README.md"
 license = { text = "MIT" }
