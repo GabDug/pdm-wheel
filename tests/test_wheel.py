@@ -57,7 +57,7 @@ def example_project(tmp_path: Path):
     return core.create_project(tmp_path)
 
 
-def test_create_main_error(example_project_no_lock: Project, invoke):
+def test_create_main_error(example_project_no_lock: Project, invoke)->None:
     # Patch os.getcwd() to return the example project root
     with cd(example_project_no_lock.root), patch(
         "os.getcwd", return_value=example_project_no_lock.root

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 
-def wheel_plugin(core: Core) -> None:
+def register_pdm_plugin(core: Core) -> None:
     """Register wheel command and post_build hook with PDM."""
     core.register_command(ExportWheelsCommand, "wheel")
 

@@ -1,6 +1,6 @@
 [build-system]
-requires = ["pdm-pep517>=1.0.0"]
-build-backend = "pdm.pep517.api"
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
 
 [project]
 name = "pdm-wheel"
@@ -8,7 +8,7 @@ dynamic = ["version"]
 description = "PDM plugin that save your requirements as wheels, similar to pip-wheel"
 authors = [{ name = "Gabriel Dugny", email = "pdm-wheel@dugny.me" }]
 dependencies = [
-    "pdm>=2.7.4",
+
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -33,8 +33,13 @@ classifiers = [
 "Bug Tracker" = "https://github.com/GabDug/pdm-wheel/issues"
 
 [project.entry-points.pdm]
-pdm-wheel = "pdm_wheel:wheel_plugin"
+pdm-wheel = "pdm_wheel:register_pdm_plugin"
 
+
+[project.optional-dependencies]
+pdm = [
+    "pdm>=2.7.4",
+]
 [tool]
 
 [tool.pdm]
@@ -59,9 +64,10 @@ dev = [
     "pytest>=7.2.0",
     "pytest-cov>=4.0.0",
     "pdm>=2.4.0",
-    "ruff>=0.0.269",
+    "ruff>=0.0.270",
     "towncrier~=19.2",
     "parver>=0.4",
+    "ipdb>=0.13.13",
 ]
 docs = [
     "mkdocs>=1.4.1",
