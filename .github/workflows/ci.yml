@@ -1,48 +1,64 @@
-name: Tests
+---
+name: Python CI
 
 on:
-  pull_request:
-    paths-ignore:
-      - "docs/**"
-      - "news/**"
-      - "*.md"
   push:
-    branches:
-      - master
-      - main
-    paths-ignore:
-      - "docs/**"
-      - "news/**"
-      - "*.md"
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
 
 jobs:
-  Testing:
+  CI-Python:
     runs-on: ${{ matrix.os }}
+    env:
+      PYTHONDEVMODE: 1
     strategy:
+      fail-fast: false
       matrix:
-        python-version: ['3.10', '3.11', '3.12-dev']
+        python-version: ['3.10', '3.11', '3.12']
+        pdm-version: ["", "head", "2.7.4", "2.8.2", "2.9.1"]
         os: [ubuntu-latest, macOS-latest, windows-latest]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up PDM
-        uses: pdm-project/setup-pdm@main
+        uses: pdm-project/setup-pdm@v3
         with:
+          cache: true
           python-version: ${{ matrix.python-version }}
-      - name: Set Variables
+          version: ${{ matrix.pdm-version }}
+          enable-pep582: false
+          allow-python-prereleases: true
+      - name: Set Cache Variables
         id: set_variables
         run: |
-          echo "::set-output name=PIP_CACHE::$(pip cache dir)"
-          echo "::set-output name=PDM_CACHE::$(pdm config cache_dir)"
-      - name: Cache PIP
+          echo "PIP_CACHE=$(pip cache dir)" >> $GITHUB_OUTPUT
+          echo "PDM_CACHE=$(pdm config cache_dir)" >> $GITHUB_OUTPUT
+      - name: Cache PIP and PDM
         uses: actions/cache@v2
         with:
           path: |
             ${{ steps.set_variables.outputs.PIP_CACHE }}
             ${{ steps.set_variables.outputs.PDM_CACHE }}
-          key: ${{ runner.os }}-pip-${{ matrix.python-version }}
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ matrix.pdm-version }}
 
       - name: Install dependencies
         run: pdm install
       - name: Run Tests
-        run: pdm run test
+        run: pdm run test-cov
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          flags: unittests
+      - name: Type check with mypy
+        run: |
+          pdm run lint-mypy
+      - name: Lint with ruff
+        run: |
+          pdm run lint-ruff --format=github --exit-non-zero-on-fix
+      - name: Build with pdm
+        run: |
+          pdm build
+          # Do not upload to PyPI, here we only want to check that the build works

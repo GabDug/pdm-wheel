@@ -11,16 +11,23 @@
 
 A PDM plugin that save your requirements as wheels, similar to [`pip wheel`](https://pip.pypa.io/en/stable/cli/pip_wheel/)
 
-## Requirements
+## Use cases
 
-pdm-wheel requires Python >=3.10, and PDM >=2.7.4
+- You want to build wheels for your dependencies, but don't want to use `pdm export` and `pip wheel`.
+- You need to pass the wheels to a CI/CD pipeline, and don't want to build them on the CI/CD server.
+- You want to install dependencies in a Docker image, but don't wan't to configure private repositories in the image.
+
+## Supported versions
+
+- Python 3.10+
+- PDM 2.7.4+
 
 ## Installation
 
-You can install the plugin directly by:
+Install it [just like any other PDM plugin](https://pdm.fming.dev/latest/dev/write/#activate-the-plugin):
 
 ```bash
-pdm plugin add pdm-wheel
+pdm self add pdm-wheel
 ```
 
 If you have installed PDM with the recommended tool `pipx`, add this plugin by:
@@ -35,7 +42,14 @@ Or if you have installed PDM with `pip install --user pdm`, install with `pip` t
 python -m pip install --user pdm-wheel
 ```
 
-Otherwise, install `pdm-wheel` to the same place where PDM is located.
+Optionally, you can also specify [the plugin in your project](https://pdm.fming.dev/latest/dev/write/#specify-the-plugins-in-project) `pyproject.toml`, to make it installable with `pdm install --plugins`:
+
+```toml
+[tool.pdm]
+plugins = [
+    "pdm-wheel"
+]
+```
 
 ## Usage
 
@@ -53,7 +67,18 @@ pdm wheel --help
 
 `-w OUTPUT, --wheel-dir OUTPUT`
 
-> Specify the output directory. By default it is the current directory
+> Specify the output directory. By default it is the current directory `./wheels`
+> Environment variable: `PDM_WHEEL_DIR`
+
+## Notes on lockfiles
+
+PDM 2.8+ now saves the lockfiles with only hashes and no URL by default.
+
+There is currently a performance overhead, as some internals expect the URL to be present, else they will try to reach the indexes to get it.
+
+Thus, I recommend you use `pdm lock --static-urls` to have faster `pdm wheel` operations.
+
+_Read more about this in [PDM's documentation](https://pdm.fming.dev/latest/usage/dependency/#store-static-urls-or-filenames-in-lockfile)._
 
 ## Examples
 

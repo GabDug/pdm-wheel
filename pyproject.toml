@@ -7,9 +7,7 @@ name = "pdm-wheel"
 dynamic = ["version"]
 description = "PDM plugin that save your requirements as wheels, similar to pip-wheel"
 authors = [{ name = "Gabriel Dugny", email = "pdm-wheel@dugny.me" }]
-dependencies = [
-
-]
+dependencies = []
 requires-python = ">=3.10"
 readme = "README.md"
 license = { text = "MIT" }
@@ -40,25 +38,33 @@ pdm-wheel = "pdm_wheel:register_pdm_plugin"
 pdm = [
     "pdm>=2.7.4",
 ]
-[tool]
 
 [tool.pdm]
-version = { source = "scm" }
+plugins = [
+    "sync-pre-commit-lock",
+    "-e ."
+]
+[tool.pdm.version]
+source = "scm"
+write_to = "pdm_wheel/_version.py"
+write_template = "__version__: str = \"{}\"\n"
 
 [tool.pdm.build]
 package-dir = "src"
 includes = ["src", "src/pdm_wheel"]
 
 [tool.pdm.scripts]
-release = "python -m tasks.release"
-test = "pytest tests/"
+fmt = {cmd="black .", help="Run black formatter"}
+test = "pytest"
+test-cov = {cmd="pytest --junitxml=junit/test-results.xml --cov --cov-report=xml --cov-report=html --cov-report=term-missing", help="Run tests with coverage"}
 doc = {shell = "cd docs && mkdocs serve", help = "Start the dev server for doc preview"}
 lint = "pre-commit run --all-files"
+lint-mypy = {cmd="mypy src", help="Run mypy type checker"}
+lint-ruff = {cmd="ruff .", help="Run ruff linter"}
 
 [tool.pdm.dev-dependencies]
 dev = [
     "black>=22.10.0",
-    "isort>=5.10.0",
     "mypy>=0.991",
     "pylint>=2.15.4",
     "pytest>=7.2.0",
@@ -90,18 +96,25 @@ exclude = [
     "build",
     "__pypackages__",
 ]
-ignore = ["E501"]
-line-length = 88
-select = [
+extend-ignore =["S101", "E501"]
+line-length = 140
+extend-select = [
     "E",
     "F",
     "W",
     "TCH",
-    "I"
+    "I",
+    "Q000", "TCH", "I001", "S", "T", "PTH", "PYI", "RET", "D209", "D202", "EM101"
 ]
 
+
+[tool.mypy]
+files = ["src"]
+strict = true
+
+
 [tool.black]
-line-length = 88
+line-length = 120
 extend-exclude = '''
 /(
     \.eggs
@@ -119,42 +132,27 @@ extend-exclude = '''
 '''
 
 
-[tool.towncrier]
-package = "pdm_wheel"
-filename = "CHANGELOG.md"
-issue_format = "[#{issue}](https://github.com/GabDug/pdm-wheel/issues/{issue})"
-directory = "news/"
-start_string = "<!-- insertion marker -->"
-title_format = "[v{version}](https://github.com/GabDug/pdm-wheel/releases/tag/{version}) ({project_date})"
-template = "news/towncrier_template.md"
-underlines = "-~^"
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+norecursedirs = "*.egg .eggs dist build docs .tox .git __pycache__ node_modules .venv __pypackages__"
 
-[[tool.towncrier.type]]
-directory = "feature"
-name = "Features & Improvements"
-showcontent = true
+[tool.coverage.run]
+branch = true
+include = ["src/*"]
+omit = ["*/tests/*"]
 
-[[tool.towncrier.type]]
-directory = "bugfix"
-name = "Bug Fixes"
-showcontent = true
+[tool.coverage.report]
+fail_under = 95.0
 
-[[tool.towncrier.type]]
-directory = "doc"
-name = "Improved Documentation"
-showcontent = true
-
-[[tool.towncrier.type]]
-directory = "dep"
-name = "Dependencies"
-showcontent = true
-
-[[tool.towncrier.type]]
-directory = "removal"
-name = "Removals and Deprecations"
-showcontent = true
-
-[[tool.towncrier.type]]
-directory = "misc"
-name = "Miscellany"
-showcontent = true
+exclude_lines = [
+    "def __repr__",
+    "if TYPE_CHECKING:",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    'class .*\bProtocol\):',
+    '@(abc\.)?abstractmethod]',
+    "except ImportError:",
+    "# nocov",
+]

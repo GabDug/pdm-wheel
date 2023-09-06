@@ -1,30 +1,22 @@
-name: Release
+name: Upload Python Package
 
 on:
-  push:
-    tags:
-      - "*"
+  release:
+    types: [published]
+
+permissions:
+  contents: read
 
 jobs:
-  release-pypi:
-    name: release-pypi
+  pypi-publish:
+    name: Upload release to PyPI
     runs-on: ubuntu-latest
+    permissions:
+      # IMPORTANT: this permission is mandatory for trusted publishing
+      id-token: write
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: "3.10"
-      - name: Build artifacts
-        run: |
-          pip install build
-          python -m build
-      - name: Test Build
-        run: |
-          python3 -m venv fresh_env
-          . fresh_env/bin/activate
-          pip install dist/*.whl
-      - name: Upload to Pypi
-        run: |
-          pip install twine
-          twine upload --username __token__ --password ${{ secrets.PYPI_TOKEN }} dist/*
+      - uses: actions/checkout@v3
+      - uses: pdm-project/setup-pdm@v3
+      - name: Publish package distributions to PyPI
+        run: pdm publish
