@@ -1,6 +1,5 @@
 import shutil
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 from pdm.core import Core
@@ -51,10 +50,10 @@ def example_project(tmp_path: Path):
 
 
 def test_create_main_error(example_project_no_lock: Project, invoke) -> None:
-    # Patch os.getcwd() to return the example project root
-    with cd(example_project_no_lock.root), patch("os.getcwd", return_value=example_project_no_lock.root):
+    # Patch cwd to return the example project root
+    with cd(example_project_no_lock.root):
         # Make sure we are pwd is the example project root
-        assert Path.cwd() == example_project_no_lock.root
+        assert Path.cwd().absolute() == example_project_no_lock.root.absolute()
 
         result = invoke(["wheel"], raising=False, obj=example_project_no_lock)
 
@@ -64,9 +63,9 @@ def test_create_main_error(example_project_no_lock: Project, invoke) -> None:
 
 # Test that locked packages are used
 def test_lockfile_matches(example_project: Project, invoke):
-    with cd(example_project.root), patch("os.getcwd", return_value=example_project.root):
+    with cd(example_project.root):
         # Make sure we are pwd is the example project root
-        assert Path.cwd() == example_project.root
+        assert str(Path.cwd().absolute()) == str(example_project.root.absolute())
 
         example_project.core.main(["wheel"], obj=example_project)
 
