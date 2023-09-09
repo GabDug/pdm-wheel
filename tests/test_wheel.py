@@ -1,9 +1,4 @@
-import os
 import shutil
-import stat
-import subprocess
-import sys
-import zipfile
 from pathlib import Path
 from unittest.mock import patch
 
@@ -19,9 +14,7 @@ def example_project_no_lock(invoke, main):
     if tmp_path.exists():
         shutil.rmtree(tmp_path)
     tmp_path.mkdir()
-    tmp_path.joinpath("app.py").write_text(
-        "import requests\ndef main():\n    print(requests.__version__)\n"
-    )
+    tmp_path.joinpath("app.py").write_text("import requests\ndef main():\n    print(requests.__version__)\n")
     project: Project = main.create_project(tmp_path)
     project.pyproject.set_data(
         {
@@ -57,13 +50,11 @@ def example_project(tmp_path: Path):
     return core.create_project(tmp_path)
 
 
-def test_create_main_error(example_project_no_lock: Project, invoke)->None:
+def test_create_main_error(example_project_no_lock: Project, invoke) -> None:
     # Patch os.getcwd() to return the example project root
-    with cd(example_project_no_lock.root), patch(
-        "os.getcwd", return_value=example_project_no_lock.root
-    ):
+    with cd(example_project_no_lock.root), patch("os.getcwd", return_value=example_project_no_lock.root):
         # Make sure we are pwd is the example project root
-        assert os.getcwd() == example_project_no_lock.root
+        assert Path.cwd() == example_project_no_lock.root
 
         result = invoke(["wheel"], raising=False, obj=example_project_no_lock)
 
@@ -73,12 +64,10 @@ def test_create_main_error(example_project_no_lock: Project, invoke)->None:
 
 # Test that locked packages are used
 def test_lockfile_matches(example_project: Project, invoke):
-    with cd(example_project.root), patch(
-        "os.getcwd", return_value=example_project.root
-    ):
+    with cd(example_project.root), patch("os.getcwd", return_value=example_project.root):
         # Make sure we are pwd is the example project root
-        assert os.getcwd() == example_project.root
-        print(os.getcwd())
+        assert Path.cwd() == example_project.root
+
         example_project.core.main(["wheel"], obj=example_project)
 
         # raise Exception("Not implemented")
@@ -99,17 +88,13 @@ def test_lockfile_matches(example_project: Project, invoke):
 # test thats --helps works
 def test_help(example_project: Project, invoke):
     """Test that the help message is correct."""
-
     result = invoke(["wheel", "--help"], raising=False, obj=example_project)
 
     # Assert that the command failed
     assert result.exit_code == 0
 
     # Assert that the help message is correct
-    assert (
-        "Build Wheel archives for your requirements and dependencies, from your lockfile."
-        in result.output
-    )
+    assert "Build Wheel archives for your requirements and dependencies, from your lockfile." in result.output
 
 
 # Test default dirpath
