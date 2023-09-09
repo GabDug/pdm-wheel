@@ -53,7 +53,7 @@ plugins = [
 
 ## Usage
 
-```
+```bash
 pdm wheel [common-options] [dependencies-selection-options] [wheel-options]
 ```
 
