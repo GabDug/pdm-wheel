@@ -25,8 +25,8 @@ def example_project_no_lock(invoke, main):
                 "dependencies": ["requests==2.24.0"],
             },
             "build-system": {
-                "requires": ["pdm-pep517"],
-                "build-backend": "pdm.pep517.api",
+                "requires": ["pdm.backend"],
+                "build-backend": "pdm.backend",
             },
         }
     )
@@ -101,3 +101,33 @@ def test_help(example_project: Project, invoke):
 
 
 # Test command dirpath
+
+
+def test_clean(example_project: Project, invoke):
+    """Test that the help message is correct."""
+    example_project.root.joinpath("wheels").mkdir()
+    file_to_be_deleted = Path(example_project.root, "wheels", "bad_file.txt")
+    file_to_be_deleted.touch()
+
+    with cd(example_project.root):
+        result = invoke(["wheel", "--clean"], raising=False, obj=example_project)
+
+    assert result.exit_code == 0
+    assert "Cleaning target directory." in result.output
+    assert not file_to_be_deleted.exists()
+    # Assert directory contains .whl files
+    assert len(list(example_project.root.joinpath("wheels").glob("*.whl"))) > 0
+
+
+def test_running_against_file(example_project: Project, invoke):
+    """Test that the help message is correct."""
+    wheels_file = example_project.root.joinpath("wheels")
+    wheels_file.touch()
+
+    with cd(example_project.root):
+        result = invoke(
+            ["wheel", "--clean", "--wheel-dir", wheels_file.resolve().as_posix()], raising=False, obj=example_project
+        )
+
+    assert result.exit_code == 1
+    assert "is not a directory." in result.stderr
