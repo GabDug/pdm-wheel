@@ -175,3 +175,4 @@ poetry.toml
 tmp
 *.code-workspace
 requirements.txt
+src/pdm_wheel/_version.py

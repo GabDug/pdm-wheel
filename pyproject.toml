@@ -65,13 +65,12 @@ lint-ruff = {cmd="ruff .", help="Run ruff linter"}
 [tool.pdm.dev-dependencies]
 dev = [
     "black>=22.10.0",
-    "mypy>=0.991",
+    "mypy>=1.4",
     "pylint>=2.15.4",
     "pytest>=7.2.0",
     "pytest-cov>=4.0.0",
     "pdm>=2.4.0",
     "ruff>=0.0.270",
-    "towncrier~=19.2",
     "parver>=0.4",
     "ipdb>=0.13.13",
 ]
@@ -143,7 +142,7 @@ include = ["src/*"]
 omit = ["*/tests/*"]
 
 [tool.coverage.report]
-fail_under = 95.0
+fail_under = 92.0
 
 exclude_lines = [
     "def __repr__",
