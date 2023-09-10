@@ -1,0 +1,26 @@
+name: Upload Python Package
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  pypi-publish:
+    name: Upload release to PyPI
+    runs-on: ubuntu-latest
+    permissions:
+      # IMPORTANT: this permission is mandatory for trusted publishing
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pdm-project/setup-pdm@v3
+      - name: Publish package distributions to PyPI
+        run: pdm publish
+      - name: Publish package distributions to GitHub Releases
+        uses: actions/upload-release-asset@v1
+        with:
+          asset_path: dist/*
