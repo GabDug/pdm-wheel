@@ -35,15 +35,10 @@ pdm-wheel = "pdm_wheel:register_pdm_plugin"
 
 
 [project.optional-dependencies]
-pdm = [
-    "pdm>=2.7.4",
-]
+pdm = ["pdm>=2.7.4"]
 
 [tool.pdm]
-plugins = [
-    "sync-pre-commit-lock",
-    "-e ."
-]
+plugins = ["sync-pre-commit-lock", "-e ."]
 [tool.pdm.version]
 source = "scm"
 write_to = "pdm_wheel/_version.py"
@@ -51,14 +46,14 @@ write_template = "__version__: str = \"{}\"\n"
 
 [tool.pdm.build]
 package-dir = "src"
-includes = ["src", "src/pdm_wheel", ]
+includes = ["src", "src/pdm_wheel"]
 excludes = [
     "tests/.*",
     "tests/build",
     "tests/fixtures/.*",
     "tests/fixtures/wheels",
     ".venv",
-    ".pdm-python"
+    ".pdm-python",
 ]
 
 [tool.pdm.scripts]
@@ -95,15 +90,8 @@ docs = [
 
 
 [tool.ruff]
-exclude = [
-    ".git",
-    "tests/fixtures/*",
-    "env",
-    "dist",
-    "build",
-    "__pypackages__",
-]
-extend-ignore =["S101", "E501"]
+exclude = [".git", "tests/fixtures/*", "env", "dist", "build", "__pypackages__"]
+extend-ignore = ["S101", "E501"]
 line-length = 140
 extend-select = [
     "E",
@@ -111,7 +99,17 @@ extend-select = [
     "W",
     "TCH",
     "I",
-    "Q000", "TCH", "I001", "S", "T", "PTH", "PYI", "RET", "D209", "D202", "EM101"
+    "Q000",
+    "TCH",
+    "I001",
+    "S",
+    "T",
+    "PTH",
+    "PYI",
+    "RET",
+    "D209",
+    "D202",
+    "EM101",
 ]
 
 

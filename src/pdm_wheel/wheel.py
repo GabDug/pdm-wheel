@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 import shutil
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Sequence
+from typing import TYPE_CHECKING, Any
 
 from pdm import termui
 from pdm.cli.actions import check_lockfile, resolve_candidates_from_lockfile
@@ -20,6 +20,7 @@ except ImportError:
 if TYPE_CHECKING:
     import argparse
     from argparse import Namespace
+    from collections.abc import Sequence
 
     from pdm.models.candidates import Candidate
     from pdm.models.requirements import Requirement
