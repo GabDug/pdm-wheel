@@ -72,7 +72,7 @@ class ExportWheelsCommand(BaseCommand):
         project.core.ui.echo("Checking lockfile...", err=False)
         check_lockfile(project, raise_not_exist=True)
 
-        if not project.lockfile.static_urls:
+        if not self._has_static_urls(project):
             project.core.ui.echo(
                 "The lockfile does not contain static file URLs. Exporting wheel may be longer than expected, and make calls to indexes.",
                 style="warning",
@@ -168,3 +168,10 @@ class ExportWheelsCommand(BaseCommand):
 
         # Remove candidates with [extras] because the bare candidates are already included
         return {name: candidate for name, candidate in candidates.items() if not candidate.req.extras}
+
+    def _has_static_urls(self, project: Project) -> bool:
+        if hasattr(project.lockfile, "static_urls"):
+            return bool(project.lockfile.static_urls)
+        if hasattr(project.lockfile, "strategy"):
+            return "static_urls" in project.lockfile.strategy
+        return True
