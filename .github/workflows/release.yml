@@ -21,6 +21,11 @@ jobs:
       - uses: pdm-project/setup-pdm@v3
       - name: Publish package distributions to PyPI
         run: pdm publish
+      - name: Upload Workflow Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: ./dist/*
       - name: Publish package distributions to GitHub Releases
         uses: actions/upload-release-asset@v1
         with:

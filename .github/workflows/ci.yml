@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ['3.10', '3.11', '3.12']
-        pdm-version: ["", "head", "2.7.4"]
+        pdm-version: ["", "head", "2.7.4", "2.8.2", "2.9.3", "2.10.0"]
         os: [ubuntu-latest]
         # We don't run the full matrix on macOS and Windows
         # Runners are more expensive on these platforms
@@ -24,9 +24,11 @@ jobs:
           - os: macOS-latest
             python-version: '3.11'
             pdm-version: ""
-          - os: windows-latest
+        exclude:
+          # Random CI errors - not worth it
+          - os: ubuntu-latest
             python-version: '3.11'
-            pdm-version: ""
+            pdm-version: "3.7.4"
 
     steps:
       - uses: actions/checkout@v4
@@ -51,8 +53,23 @@ jobs:
             ${{ steps.set_variables.outputs.PDM_CACHE }}
           key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ matrix.pdm-version }}
 
+
       - name: Install dependencies
-        run: pdm install
+        run: |
+          pdm config venv.with_pip True
+          pdm install -G :all --dev
+          pdm venv activate in-project
+          source .venv/bin/activate
+
+          # Get the pip command to run depending on matrix.pdm-version
+          # We force reinstall of pdm in the virtualenv
+          if [[ "${{ matrix.pdm-version }}" == "head" ]]; then
+            pip install "pdm @ git+https://github.com/pdm-project/pdm"
+          elif [[ "${{ matrix.pdm-version }}" == "" ]]; then
+            pip install pdm
+          else
+            pip install pdm==${{ matrix.pdm-version }}
+          fi
       - name: Run Tests
         run: pdm run test-cov
       - name: Upload coverage to Codecov
@@ -66,7 +83,7 @@ jobs:
           pdm run lint-mypy
       - name: Lint with ruff
         run: |
-          pdm run lint-ruff --format=github --exit-non-zero-on-fix
+          pdm run lint-ruff --output-format=github --exit-non-zero-on-fix
       - name: Build with pdm
         run: |
           pdm build
