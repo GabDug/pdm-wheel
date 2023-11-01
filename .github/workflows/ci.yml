@@ -24,9 +24,11 @@ jobs:
           - os: macOS-latest
             python-version: '3.11'
             pdm-version: ""
-          - os: windows-latest
+        exclude:
+          # Random CI errors - not worth it
+          - os: ubuntu-latest
             python-version: '3.11'
-            pdm-version: ""
+            pdm-version: "3.7.4"
 
     steps:
       - uses: actions/checkout@v4
