@@ -51,8 +51,23 @@ jobs:
             ${{ steps.set_variables.outputs.PDM_CACHE }}
           key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ matrix.pdm-version }}
 
+
       - name: Install dependencies
-        run: pdm install
+        run: |
+          pdm config venv.with_pip True
+          pdm install -G :all --dev
+          pdm venv activate in-project
+          source .venv/bin/activate
+
+          # Get the pip command to run depending on matrix.pdm-version
+          # We force reinstall of pdm in the virtualenv
+          if [[ "${{ matrix.pdm-version }}" == "head" ]]; then
+            pip install "pdm @ git+https://github.com/pdm-project/pdm"
+          elif [[ "${{ matrix.pdm-version }}" == "" ]]; then
+            pip install pdm
+          else
+            pip install pdm==${{ matrix.pdm-version }}
+          fi
       - name: Run Tests
         run: pdm run test-cov
       - name: Upload coverage to Codecov
