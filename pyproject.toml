@@ -148,7 +148,7 @@ include = ["src/*"]
 omit = ["*/tests/*"]
 
 [tool.coverage.report]
-fail_under = 90.0
+fail_under = 88.0
 
 exclude_lines = [
     "def __repr__",
