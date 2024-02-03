@@ -83,8 +83,10 @@ dev = [
 
 [tool.ruff]
 exclude = [".git", "tests/fixtures/*", "env", "dist", "build", "__pypackages__"]
-extend-ignore = ["S101", "E501"]
 line-length = 140
+
+[tool.ruff.lint]
+extend-ignore = ["S101", "E501"]
 extend-select = [
     "E",
     "F",
