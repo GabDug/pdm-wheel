@@ -40,6 +40,7 @@ pdm = ["pdm>=2.7.4"]
 
 [tool.pdm]
 plugins = ["sync-pre-commit-lock", "-e ."]
+
 [tool.pdm.version]
 source = "scm"
 write_to = "pdm_wheel/_version.py"
@@ -77,16 +78,6 @@ dev = [
     "ruff>=0.0.270",
     "parver>=0.4",
     "ipdb>=0.13.13",
-]
-docs = [
-    "mkdocs>=1.4.1",
-    "mkdocs-material>=8.5.6",
-    "mkdocstrings[python]>=0.19.0",
-    "mkdocs-htmlproofer-plugin>=0.10.0",
-    "mkdocs-gen-files>=0.4.0",
-    "mkdocs-literate-nav>=0.5.0",
-    "mkdocs-git-revision-date-plugin>=0.3.2",
-    "mkdocs-include-markdown-plugin>=3.9.1",
 ]
 
 
