@@ -3,7 +3,7 @@
     ".venv/*": true
   },
   "files.exclude": {
-    "**/.venv": true
+    "**/.venv": false
   },
   "files.watcherExclude": {
     "**/.venv/": true
@@ -14,14 +14,8 @@
   "explorer.excludeGitIgnore": false,
   "python.envFile": "${workspaceFolder}/.env",
   "python.analysis.extraPaths": [ ".venv/lib/python3.11/site-packages"],
-  "python.linting.ignorePatterns": ["**/site-packages/**/*.py", ".vscode/*.py", "**/.venv/**"],
-  "python.formatting.provider": "none",
-  "python.linting.flake8Enabled": false,
-  "python.linting.enabled": true,
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
-  "python.linting.pylintEnabled": true,
-  "python.linting.mypyEnabled": true,
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.formatOnSave": true,
