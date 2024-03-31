@@ -5,7 +5,7 @@
 groups = ["default", "dev", "pdm", "testtox"]
 strategy = ["cross_platform"]
 lock_version = "4.4.1"
-content_hash = "sha256:57118636540117a4aae09c4ba82274738d0f312cc9b9f2fe6f87e06a03112795"
+content_hash = "sha256:63df53d5670923003264afe9d14e8b853ed4e9f6ede92bfa94f03cc437d4e849"
 
 [[package]]
 name = "anyio"

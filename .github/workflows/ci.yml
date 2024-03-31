@@ -17,7 +17,14 @@ jobs:
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12']
         pdm-version: [""]
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
+        include:
+          - os: macOS-latest
+            python-version: '3.12'
+            pdm-version: ""
+          - os: windows-latest
+            python-version: '3.12'
+            pdm-version: ""
 
 
     steps:
