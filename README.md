@@ -16,7 +16,7 @@ A PDM plugin that save your requirements as wheels, similar to [`pip wheel`](htt
 
 - You want to build wheels for your dependencies, but don't want to use `pdm export` and `pip wheel`.
 - You need to pass the wheels to a CI/CD pipeline, and don't want to build them on the CI/CD server.
-- You want to install dependencies in a Docker image, but don't wan't to configure private repositories in the image.
+- You want to install dependencies in a Docker image, but don't want to configure private repositories in the image.
 
 ## Supported versions
 

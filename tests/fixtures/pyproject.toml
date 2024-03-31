@@ -3,23 +3,32 @@
 name = "test-project"
 version = "0.1.0"
 description = ""
+readme = "README.md"
+license = {text = "MIT"}
 authors = [
     {name = "John Doe", email = "john@d.oe"},
 ]
-dependencies = [
-    "requests==2.28.2",
-]
 requires-python = ">=3.9"
-readme = "README.md"
-license = {text = "MIT"}
-
+classifiers = [
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+  "requests==2.28.2",
+]
 [project.optional-dependencies]
 opt = [
-    "pathspec>=0.7.0",
+  "pathspec>=0.7",
 ]
+
 [build-system]
-requires = ["pdm-backend"]
 build-backend = "pdm.backend"
+requires = [
+  "pdm-backend",
+]
 
 [tool.pdm.dev-dependencies]
 dev = [

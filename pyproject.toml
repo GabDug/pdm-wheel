@@ -1,42 +1,44 @@
 [build-system]
-requires = ["pdm-backend"]
 build-backend = "pdm.backend"
+requires = [
+  "pdm-backend",
+]
 
 [project]
 name = "pdm-wheel"
-dynamic = ["version"]
 description = "PDM plugin that save your requirements as wheels, similar to pip-wheel"
-authors = [{ name = "Gabriel Dugny", email = "pdm-wheel@dugny.me" }]
-dependencies = []
-requires-python = ">=3.9"
 readme = "README.md"
 license = { text = "MIT" }
+authors = [{ name = "Gabriel Dugny", email = "pdm-wheel@dugny.me" }]
+requires-python = ">=3.9"
 classifiers = [
-    "Development Status :: 2 - Pre-Alpha",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Typing :: Typed",
+  "Development Status :: 2 - Pre-Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Typing :: Typed",
 ]
-
+dynamic = [
+  "version",
+]
+dependencies = [
+]
+[project.optional-dependencies]
+pdm = [
+  "pdm!=2.13.0,!=2.13.1,>=2.7.4",
+]
 [project.urls]
-"Homepage" = "https://github.com/GabDug/pdm-wheel"
-"Changelog" = "https://github.com/GabDug/pdm-wheel/blob/main/CHANGELOG.md"
 "Bug Tracker" = "https://github.com/GabDug/pdm-wheel/issues"
-
+"Changelog" = "https://github.com/GabDug/pdm-wheel/blob/main/CHANGELOG.md"
+"Homepage" = "https://github.com/GabDug/pdm-wheel"
 [project.entry-points.pdm]
 pdm-wheel = "pdm_wheel:register_pdm_plugin"
-
-
-[project.optional-dependencies]
-pdm = ["pdm>=2.7.4,!=2.13.0,!=2.13.1"]
 
 [tool.pdm]
 plugins = ["sync-pre-commit-lock", "-e ."]
@@ -88,10 +90,27 @@ testtox= [
     "click>=8.1.7",
 ]
 
+[tool.black]
+line-length = 120
+extend-exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | tests/fixtures
+)/
+'''
 
 [tool.ruff]
 exclude = [".git", "tests/fixtures/*", "env", "dist", "build", "__pypackages__"]
-line-length = 140
+line-length = 120
 
 [tool.ruff.lint]
 extend-ignore = ["S101", "E501"]
@@ -114,36 +133,10 @@ extend-select = [
     "EM101",
 ]
 
-
-[tool.mypy]
-files = ["src"]
-strict = true
-
-
-[tool.black]
-line-length = 120
-extend-exclude = '''
-/(
-    \.eggs
-  | \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-  | tests/fixtures
-)/
-'''
-
-
 [tool.pytest.ini_options]
 minversion = "7.0"
 testpaths = ["tests"]
 norecursedirs = "*.egg .eggs dist build docs .tox .git __pycache__ node_modules .venv __pypackages__"
-
 
 [tool.coverage.paths]
 source =[
@@ -171,3 +164,7 @@ exclude_lines = [
     "except ImportError:",
     "# nocov",
 ]
+
+[tool.mypy]
+files = ["src"]
+strict = true
