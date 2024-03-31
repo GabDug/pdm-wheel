@@ -8,7 +8,7 @@ from pdm.utils import cd
 
 
 @pytest.fixture(scope="module")
-def example_project_no_lock(invoke, main):
+def example_project_no_lock(main):
     tmp_path = Path(__file__).parent / ".testing"
     if tmp_path.exists():
         shutil.rmtree(tmp_path)
@@ -35,18 +35,14 @@ def example_project_no_lock(invoke, main):
 
 
 @pytest.fixture()
-# @pytest.fixture(scope="module")
 def example_project(tmp_path: Path):
-    # Load project from` fixtures`
-    # project = main.create_project()
-    # return project
-
-    # @pytest.fixture()
-    # def tmp_project(tmp_path: Path) -> Project:
     shutil.copy2(Path(__file__).parent / "fixtures" / "pyproject.toml", tmp_path)
     shutil.copy2(Path(__file__).parent / "fixtures" / "pdm.lock", tmp_path)
     core = Core()
-    return core.create_project(tmp_path)
+
+    pj = core.create_project(tmp_path)
+    pj.global_config._file_data["cache_dir"] = tmp_path / "cache"
+    return pj
 
 
 def test_create_main_error(example_project_no_lock: Project, invoke) -> None:
@@ -62,21 +58,21 @@ def test_create_main_error(example_project_no_lock: Project, invoke) -> None:
 
 
 # Test that locked packages are used
-def test_lockfile_matches(example_project: Project, invoke):
+def test_lockfile_matches(example_project: Project):
     with cd(example_project.root):
         # Make sure we are pwd is the example project root
         assert str(Path.cwd().absolute()) == str(example_project.root.absolute())
 
         example_project.core.main(["wheel"], obj=example_project)
 
-        # raise Exception("Not implemented")
-
         # Assert that the lockfile matches the expected output
         assert Path(example_project.root, "wheels").exists()
 
-        # Assert that lockfiles entries match the wheels created
+        all_wheels = list(example_project.root.joinpath("wheels").glob("*.whl"))
+        # Asset we have the right number of wheels (+/- because of the python version)
+        assert len(all_wheels) in [11, 12]
 
-        # Assert we have exactly the rught number of wheels
+        # XXX Assert that lockfiles entries match the wheels created
 
 
 # Test --group works
@@ -84,7 +80,6 @@ def test_lockfile_matches(example_project: Project, invoke):
 # Test --dev
 
 
-# test thats --helps works
 def test_help(example_project: Project, invoke):
     """Test that the help message is correct."""
     result = invoke(["wheel", "--help"], raising=False, obj=example_project)
@@ -125,8 +120,10 @@ def test_running_against_file(example_project: Project, invoke):
 
     with cd(example_project.root):
         result = invoke(
-            ["wheel", "--clean", "--wheel-dir", wheels_file.resolve().as_posix()], raising=False, obj=example_project
+            ["wheel", "-v", "--clean", "--wheel-dir", wheels_file.resolve().as_posix()],
+            raising=False,
+            obj=example_project,
         )
 
     assert result.exit_code == 1
-    assert "is not a directory." in result.stderr
+    assert "is not a directory." in str(result.exception) or "is not a directory." in result.stderr

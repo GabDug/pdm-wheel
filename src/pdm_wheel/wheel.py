@@ -66,6 +66,18 @@ class ExportWheelsCommand(BaseCommand):
         )
 
     def handle(self, project: Project, options: argparse.Namespace) -> None:
+        # Create output directory if it doesn't exist
+        wheel_dir = Path(options.wheel_dir) if options.wheel_dir else Path().cwd().joinpath("wheels")
+
+        if not wheel_dir.exists():
+            project.core.ui.echo(f"Creating target directory: {wheel_dir}", err=False)
+            wheel_dir.mkdir(parents=True, exist_ok=True)
+        else:
+            project.core.ui.echo(f"Target directory: {wheel_dir}", err=False)
+
+        if not wheel_dir.is_dir():
+            raise RuntimeError(f"Wheel target {wheel_dir} is not a directory.")
+
         # XXX --force flag to ignore warnings?
         project.core.ui.echo("Checking project file...", err=False)
         check_project_file(project)
@@ -86,18 +98,6 @@ class ExportWheelsCommand(BaseCommand):
 
         project.core.ui.echo("Resolving wheel candidates for this platform...", err=False)
         candidates = self._get_candidates(project, options)
-
-        # Create output directory if it doesn't exist
-        wheel_dir = Path(options.wheel_dir) if options.wheel_dir else Path().cwd().joinpath("wheels")
-
-        if not wheel_dir.exists():
-            project.core.ui.echo(f"Creating target directory: {wheel_dir}", err=False)
-            wheel_dir.mkdir(parents=True, exist_ok=True)
-        else:
-            project.core.ui.echo(f"Target directory: {wheel_dir}", err=False)
-
-        if not wheel_dir.is_dir():
-            raise RuntimeError(f"Wheel target {wheel_dir} is not a directory.")
 
         # Clean the target directory if the flag is set
         if options.clean:
