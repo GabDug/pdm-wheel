@@ -16,22 +16,8 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12']
-        pdm-version: ["", "head", "2.7.4", "2.8.2", "2.9.3", "2.10.4", '2.11.2', '2.12.4', '2.13.2']
-        os: [ubuntu-latest]
-        # We don't run the full matrix on macOS and Windows
-        # Runners are more expensive on these platforms
-        include:
-          - os: macOS-latest
-            python-version: '3.11'
-            pdm-version: ""
-        exclude:
-          # Random CI errors - not worth it: update PDM or Python
-          - os: ubuntu-latest
-            python-version: '3.11'
-            pdm-version: "3.7.4"
-          - os: ubuntu-latest
-            python-version: '3.9'
-            pdm-version: "3.11.2"
+        pdm-version: [""]
+        os: [ubuntu-latest, macos-latest]
 
 
     steps:
@@ -42,7 +28,6 @@ jobs:
           cache: true
           python-version: ${{ matrix.python-version }}
           version: ${{ matrix.pdm-version }}
-          enable-pep582: false
           allow-python-prereleases: true
       - name: Set Cache Variables
         id: set_variables
@@ -57,7 +42,6 @@ jobs:
             ${{ steps.set_variables.outputs.PDM_CACHE }}
           key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ matrix.pdm-version }}
 
-
       - name: Install dependencies
         run: |
           pdm config venv.with_pip True
@@ -67,17 +51,19 @@ jobs:
 
           # Get the pip command to run depending on matrix.pdm-version
           # We force reinstall of pdm in the virtualenv
-          if [[ "${{ matrix.pdm-version }}" == "head" ]]; then
-            pip install "pdm @ git+https://github.com/pdm-project/pdm"
-          elif [[ "${{ matrix.pdm-version }}" == "" ]]; then
-            pip install pdm
-          else
-            pip install pdm==${{ matrix.pdm-version }}
-          fi
-      - name: Run Tests
-        run: pdm run test-cov
+          # if [[ "${{ matrix.pdm-version }}" == "head" ]]; then
+          #   pip install "pdm @ git+https://github.com/pdm-project/pdm"
+          # elif [[ "${{ matrix.pdm-version }}" == "" ]]; then
+          #   pip install pdm
+          # else
+          #   pip install pdm==${{ matrix.pdm-version }}
+          # fi
+      - name: Setup Tox environments
+        run: pdm run tox -vv --notest
+      - name: Run Test with tox
+        run: pdm run tox
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.xml

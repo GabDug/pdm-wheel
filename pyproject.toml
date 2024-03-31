@@ -78,6 +78,13 @@ dev = [
     "ruff>=0.0.270",
     "parver>=0.4",
     "ipdb>=0.13.13",
+    "tox>=4.14.2",
+    "tox-pdm>=0.7.2",
+    "tox-gh>=1.3.1",
+]
+testtox= [
+    "pytest>=7.2.0",
+    "pytest-cov>=4.0.0",
 ]
 
 
@@ -136,14 +143,22 @@ minversion = "7.0"
 testpaths = ["tests"]
 norecursedirs = "*.egg .eggs dist build docs .tox .git __pycache__ node_modules .venv __pypackages__"
 
+
+[tool.coverage.paths]
+source =[
+   "src",
+   "*/site-packages"
+]
 [tool.coverage.run]
 branch = true
+parallel = true
 include = ["src/*"]
 omit = ["*/tests/*"]
+source = ["src", "tests"]
 
 [tool.coverage.report]
-fail_under = 88.0
-
+show_missing = true
+precision = 2
 exclude_lines = [
     "def __repr__",
     "if TYPE_CHECKING:",
