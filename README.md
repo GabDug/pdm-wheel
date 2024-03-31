@@ -8,6 +8,7 @@
 [![pdm-managed](https://img.shields.io/badge/pdm-managed-blueviolet)](https://pdm.fming.dev)
 [![Ruff](https://img.shields.io/badge/ruff-lint-red)](https://github.com/charliermarsh/ruff)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![codecov](https://codecov.io/gh/GabDug/pdm-wheel/graph/badge.svg?token=DNNG0ZOODJ)](https://codecov.io/gh/GabDug/pdm-wheel)
 
 A PDM plugin that save your requirements as wheels, similar to [`pip wheel`](https://pip.pypa.io/en/stable/cli/pip_wheel/)
 
