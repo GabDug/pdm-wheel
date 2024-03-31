@@ -52,9 +52,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pdm config venv.with_pip True
           pdm install -G :all --dev
-          pdm venv activate in-project
       - name: Run Test with tox
         run: pdm run tox
       - name: Upload coverage to Codecov
