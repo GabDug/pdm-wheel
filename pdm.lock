@@ -5,7 +5,7 @@
 groups = ["default", "dev", "pdm", "testtox"]
 strategy = ["cross_platform"]
 lock_version = "4.4.1"
-content_hash = "sha256:0833cec873eaf815bfe87af901d6936d32f2dd5fb8525ebdf5fdb418197790b2"
+content_hash = "sha256:57118636540117a4aae09c4ba82274738d0f312cc9b9f2fe6f87e06a03112795"
 
 [[package]]
 name = "anyio"
@@ -1151,6 +1151,19 @@ dependencies = [
 files = [
     {file = "tox-4.14.2-py3-none-any.whl", hash = "sha256:2900c4eb7b716af4a928a7fdc2ed248ad6575294ed7cfae2ea41203937422847"},
     {file = "tox-4.14.2.tar.gz", hash = "sha256:0defb44f6dafd911b61788325741cc6b2e12ea71f987ac025ad4d649f1f1a104"},
+]
+
+[[package]]
+name = "tox-gh"
+version = "1.3.1"
+requires_python = ">=3.7"
+summary = "Seamless integration of tox into GitHub Actions."
+dependencies = [
+    "tox>=4.6",
+]
+files = [
+    {file = "tox_gh-1.3.1-py3-none-any.whl", hash = "sha256:c671c62ce23ae519a557c3da81e9aa7e35b3a66c69bad71908e595921f83e82d"},
+    {file = "tox_gh-1.3.1.tar.gz", hash = "sha256:594af90b740c14735c41b914b41db2d2aa0360929a1746af32bda4b9fef9bf3d"},
 ]
 
 [[package]]
