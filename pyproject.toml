@@ -36,7 +36,7 @@ pdm-wheel = "pdm_wheel:register_pdm_plugin"
 
 
 [project.optional-dependencies]
-pdm = ["pdm>=2.7.4"]
+pdm = ["pdm>=2.7.4,!=2.13.0,!=2.13.1"]
 
 [tool.pdm]
 plugins = ["sync-pre-commit-lock", "-e ."]

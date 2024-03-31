@@ -20,7 +20,9 @@ A PDM plugin that save your requirements as wheels, similar to [`pip wheel`](htt
 ## Supported versions
 
 - Python 3.10+
-- PDM 2.7.4+
+- PDM 2.7.4+ (not 2.13.0 and 2.13.1)
+
+We recommend you use the patch versions of Python and PDM.
 
 ## Installation
 
