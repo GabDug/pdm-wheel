@@ -67,7 +67,7 @@ test-cov = {cmd="pytest --junitxml=junit/test-results.xml --cov --cov-report=xml
 doc = {shell = "cd docs && mkdocs serve", help = "Start the dev server for doc preview"}
 lint = "pre-commit run --all-files"
 lint-mypy = {cmd="mypy src", help="Run mypy type checker"}
-lint-ruff = {cmd="ruff .", help="Run ruff linter"}
+lint-ruff = {cmd="ruff check .", help="Run ruff linter"}
 
 [tool.pdm.dev-dependencies]
 dev = [
