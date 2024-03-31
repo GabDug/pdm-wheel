@@ -17,7 +17,14 @@ jobs:
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12']
         pdm-version: [""]
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
+        include:
+          - os: macOS-latest
+            python-version: '3.12'
+            pdm-version: ""
+          - os: windows-latest
+            python-version: '3.12'
+            pdm-version: ""
 
 
     steps:
@@ -47,19 +54,6 @@ jobs:
           pdm config venv.with_pip True
           pdm install -G :all --dev
           pdm venv activate in-project
-          source .venv/bin/activate
-
-          # Get the pip command to run depending on matrix.pdm-version
-          # We force reinstall of pdm in the virtualenv
-          # if [[ "${{ matrix.pdm-version }}" == "head" ]]; then
-          #   pip install "pdm @ git+https://github.com/pdm-project/pdm"
-          # elif [[ "${{ matrix.pdm-version }}" == "" ]]; then
-          #   pip install pdm
-          # else
-          #   pip install pdm==${{ matrix.pdm-version }}
-          # fi
-      - name: Setup Tox environments
-        run: pdm run tox -vv --notest
       - name: Run Test with tox
         run: pdm run tox
       - name: Upload coverage to Codecov
