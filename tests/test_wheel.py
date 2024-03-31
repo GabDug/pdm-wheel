@@ -1,10 +1,15 @@
+from __future__ import annotations
+
 import shutil
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 from pdm.core import Core
-from pdm.project.core import Project
 from pdm.utils import cd
+
+if TYPE_CHECKING:
+    from pdm.project.core import Project
 
 
 @pytest.fixture(scope="module")
