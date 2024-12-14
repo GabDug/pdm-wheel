@@ -38,17 +38,17 @@ repos:
         additional_dependencies: ["tox>=4.14.1"]
 
   - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 24.3.0
+    rev: 24.10.0
     hooks:
       - id: black
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.3.4
+    rev: v0.8.3
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
 
   - repo: https://github.com/pdm-project/pdm
-    rev: 2.13.2
+    rev: 2.22.0
     hooks:
       - id: pdm-lock-check
