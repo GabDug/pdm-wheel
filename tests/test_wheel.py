@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 @pytest.fixture(scope="module")
-def example_project_no_lock(main):
+def example_project_no_lock(main: Core) -> Project:
     tmp_path = Path(__file__).parent / ".testing"
     if tmp_path.exists():
         shutil.rmtree(tmp_path)
@@ -40,7 +40,7 @@ def example_project_no_lock(main):
 
 
 @pytest.fixture()
-def example_project(tmp_path: Path):
+def example_project(project: Project, tmp_path: Path) -> Project:
     shutil.copy2(Path(__file__).parent / "fixtures" / "pyproject.toml", tmp_path)
     shutil.copy2(Path(__file__).parent / "fixtures" / "pdm.lock", tmp_path)
     core = Core()
@@ -63,7 +63,7 @@ def test_create_main_error(example_project_no_lock: Project, invoke) -> None:
 
 
 # Test that locked packages are used
-def test_lockfile_matches(example_project: Project):
+def test_lockfile_matches(example_project: Project) -> None:
     with cd(example_project.root):
         # Make sure we are pwd is the example project root
         assert str(Path.cwd().absolute()) == str(example_project.root.absolute())
@@ -85,7 +85,7 @@ def test_lockfile_matches(example_project: Project):
 # Test --dev
 
 
-def test_help(example_project: Project, invoke):
+def test_help(example_project: Project, invoke) -> None:
     """Test that the help message is correct."""
     result = invoke(["wheel", "--help"], raising=False, obj=example_project)
 
@@ -102,7 +102,7 @@ def test_help(example_project: Project, invoke):
 # Test command dirpath
 
 
-def test_clean(example_project: Project, invoke):
+def test_export_with_clean(example_project: Project, invoke) -> None:
     """Test that the help message is correct."""
     example_project.root.joinpath("wheels").mkdir()
     file_to_be_deleted = Path(example_project.root, "wheels", "bad_file.txt")
@@ -118,7 +118,7 @@ def test_clean(example_project: Project, invoke):
     assert len(list(example_project.root.joinpath("wheels").glob("*.whl"))) > 0
 
 
-def test_running_against_file(example_project: Project, invoke):
+def test_running_against_file(example_project: Project, invoke) -> None:
     """Test that the help message is correct."""
     wheels_file = example_project.root.joinpath("wheels")
     wheels_file.touch()

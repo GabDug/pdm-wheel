@@ -13,11 +13,13 @@
   },
   "explorer.excludeGitIgnore": false,
   "python.envFile": "${workspaceFolder}/.env",
-  "python.analysis.extraPaths": [ ".venv/lib/python3.11/site-packages"],
+  "python.analysis.extraPaths": [
+    ".venv/lib/python3.12/site-packages"
+  ],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
   "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
       "source.organizeImports": "explicit",
@@ -25,4 +27,4 @@
       "source.organizeImports.isort": "never"
     }
   }
- }
+}

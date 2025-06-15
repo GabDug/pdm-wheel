@@ -7,7 +7,6 @@
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/GabDug/pdm-wheel/main.svg?badge_token=PzBISUnvTEeYahD7i22qiA)](https://results.pre-commit.ci/latest/github/GabDug/pdm-wheel/main?badge_token=PzBISUnvTEeYahD7i22qiA)
 [![pdm-managed](https://img.shields.io/badge/pdm-managed-blueviolet)](https://pdm.fming.dev)
 [![Ruff](https://img.shields.io/badge/ruff-lint-red)](https://github.com/charliermarsh/ruff)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![codecov](https://codecov.io/gh/GabDug/pdm-wheel/graph/badge.svg?token=DNNG0ZOODJ)](https://codecov.io/gh/GabDug/pdm-wheel)
 
 A PDM plugin that save your requirements as wheels, similar to [`pip wheel`](https://pip.pypa.io/en/stable/cli/pip_wheel/)
@@ -20,14 +19,14 @@ A PDM plugin that save your requirements as wheels, similar to [`pip wheel`](htt
 
 ## Supported versions
 
-- Python 3.10+
-- PDM 2.7.4+ (not 2.13.0 and 2.13.1)
+- Python 3.10 to 3.13+
+- PDM 2.7.4 to 2.25+ (excluding 2.13.0 and 2.13.1)
 
 We recommend you use the patch versions of Python and PDM.
 
 ## Installation
 
-Install it [just like any other PDM plugin](https://pdm.fming.dev/latest/dev/write/#activate-the-plugin):
+Install it [just like any other PDM plugin](https://pdm-project.org/latest/dev/write/#activate-the-plugin):
 
 ```bash
 pdm self add pdm-wheel
@@ -45,7 +44,7 @@ Or if you have installed PDM with `pip install --user pdm`, install with `pip` t
 python -m pip install --user pdm-wheel
 ```
 
-Optionally, you can also specify [the plugin in your project](https://pdm.fming.dev/latest/dev/write/#specify-the-plugins-in-project) `pyproject.toml`, to make it installable with `pdm install --plugins`:
+Optionally, you can also specify [the plugin in your project](https://pdm-project.org/latest/dev/write/#specify-the-plugins-in-project) `pyproject.toml`, to make it installable with `pdm install --plugins`:
 
 ```toml
 [tool.pdm]
@@ -89,7 +88,7 @@ There is currently a performance overhead, as some internals expect the URL to b
 
 Thus, I recommend you use `pdm lock --static-urls` to have faster `pdm wheel` operations.
 
-_Read more about this in [PDM's documentation](https://pdm.fming.dev/latest/usage/dependency/#store-static-urls-or-filenames-in-lockfile)._
+_Read more about this in [PDM's documentation](https://pdm-project.org/latest/usage/dependency/#store-static-urls-or-filenames-in-lockfile)._
 
 ## Examples
 
