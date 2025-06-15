@@ -1,0 +1,9 @@
+[tools]
+pdm = "2.25"
+python = ["3.12", "3.13", "3.11", "3.10", "3.9"]
+poetry = "2"
+
+[env]
+'_'.file = ".env"
+# Load the Python venv automatically
+# '_'.python.venv = { path = ".venv", create = true }
