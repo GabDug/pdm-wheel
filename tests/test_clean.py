@@ -1,20 +1,20 @@
-import os
 from pathlib import Path
 
 import pytest
+
 from pdm_wheel import ExportWheelsCommand
 
 
 class TestCleanTargetDirectory:
     # Test case for the case where wheel_dir does not exist
-    def test_wheel_dir_not_exists(self, tmp_path):
+    def test_wheel_dir_not_exists(self, tmp_path: Path) -> None:
         command = ExportWheelsCommand()
         tmp_path = tmp_path / "does_not_exist"
         with pytest.raises(RuntimeError):
             command._clean_target_directory(tmp_path)
 
     # Test case for the case where wheel_dir is not a directory
-    def test_wheel_dir_not_a_directory(self, tmp_path: Path):
+    def test_wheel_dir_not_a_directory(self, tmp_path: Path) -> None:
         command = ExportWheelsCommand()
         temp_file = tmp_path / "temp_file.txt"
         temp_file.touch(exist_ok=True)
@@ -22,7 +22,7 @@ class TestCleanTargetDirectory:
             command._clean_target_directory(temp_file)
 
     # Test case for the case where wheel_dir is root or system path
-    def test_wheel_dir_is_root_or_system_path(self):
+    def test_wheel_dir_is_root_or_system_path(self) -> None:
         command = ExportWheelsCommand()
         with pytest.raises(RuntimeError):
             command._clean_target_directory(Path("/"))
@@ -30,7 +30,7 @@ class TestCleanTargetDirectory:
             command._clean_target_directory(Path("C:\\"))
 
     # Test case for the case where ignore list is provided
-    def test_ignore_list_provided(self, tmp_path: Path):
+    def test_ignore_list_provided(self, tmp_path: Path) -> None:
         command = ExportWheelsCommand()
         ignore_list = ["file1.txt", "file2.txt"]
         for file_name in ignore_list:
@@ -43,14 +43,14 @@ class TestCleanTargetDirectory:
         for file_name in ignore_list:
             assert (tmp_path / file_name).exists()
         # Check that other files are deleted
-        for file_name in os.listdir(tmp_path):
-            if file_name not in ignore_list:
-                assert not (tmp_path / file_name).exists()
+        for file_path in tmp_path.iterdir():
+            if file_path.name not in ignore_list:
+                assert not file_path.exists()
         # Check the number of files in the directory
-        assert len(os.listdir(tmp_path)) == len(ignore_list)
+        assert len(list(tmp_path.iterdir())) == len(ignore_list)
 
     # Test case for the case where ignore list is not provided
-    def test_ignore_list_not_provided(self, tmp_path: Path):
+    def test_ignore_list_not_provided(self, tmp_path: Path) -> None:
         command = ExportWheelsCommand()
         temp_file = tmp_path / "temp_file.txt"
         temp_file.touch()

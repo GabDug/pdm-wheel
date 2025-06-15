@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 
     from pdm.models.candidates import Candidate
     from pdm.models.requirements import Requirement
-    from pdm.project.core import Project
+    from pdm.project import Project
 
 
 class ExportWheelsCommand(BaseCommand):
@@ -123,13 +123,12 @@ class ExportWheelsCommand(BaseCommand):
                 )
         project.core.ui.echo(f"\n{termui.Emoji.POPPER} Done exporting wheels!\n", err=False)
 
-        if len(build_failures) > 0:
+        if build_failures and candidates:  # Only raise if we actually attempted to build wheels
             project.core.ui.echo(
                 f" [error]{termui.Emoji.FAIL} Failed to export [bold]{len(build_failures)}[/bold] wheels: {build_failures}[/error]",
                 style="error",
                 err=True,
             )
-            # XXX Exit with non-zero status code
             msg = f"Failed to export {len(build_failures)} wheels"
             raise RuntimeError(msg)
 
@@ -147,16 +146,17 @@ class ExportWheelsCommand(BaseCommand):
         if ignore is None:
             ignore = []
 
-        for f_path in os.listdir(wheel_dir):
-            if f_path not in ignore:
-                Path.unlink(wheel_dir / f_path)
+        for f_path in wheel_dir.iterdir():
+            if f_path.name not in ignore:
+                f_path.unlink()
         return
 
     def _get_candidates(self, project: Project, options: Namespace) -> dict[str, Candidate]:
         selection = GroupSelection.from_options(project, options)
         requirements: dict[str, Requirement] = {}
         for group in selection:
-            requirements.update(project.get_dependencies(group=group))
+            deps = project.get_dependencies(group=group)
+            requirements.update({req.identify(): req for req in deps})
 
         project.core.ui.echo(
             "The exported wheels are no longer cross-platform. "

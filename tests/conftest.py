@@ -2,11 +2,16 @@
 
 from __future__ import annotations
 
-from typing import Any, Sequence
+from typing import TYPE_CHECKING, Any, Callable
 
 import pytest
 from click.testing import CliRunner, Result
 from pdm.core import Core
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+pytest_plugins = ["pdm.pytest"]
 
 
 @pytest.fixture(scope="session")
@@ -15,13 +20,13 @@ def main() -> Core:
 
 
 @pytest.fixture(scope="session")
-def invoke(main: Core):
+def invoke(main: Core) -> Callable[..., Result]:
     runner = CliRunner(mix_stderr=False)
 
     def caller(args: str | Sequence[str] | None, *, raising: bool = True, **extras: Any) -> Result:
         result = runner.invoke(main, args, prog_name="pdm", catch_exceptions=not raising, **extras)
         if result.exit_code != 0 and raising:
-            raise RuntimeError(f"Calling command {args} failed with exit code: {result.exit_code}\n" f"{result.stderr}")
+            raise RuntimeError(f"Calling command {args} failed with exit code: {result.exit_code}\n{result.stderr}")
         return result
 
     return caller

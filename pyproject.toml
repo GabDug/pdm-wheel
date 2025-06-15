@@ -22,6 +22,7 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
   "Typing :: Typed",
 ]
 dynamic = [
@@ -42,6 +43,7 @@ pdm-wheel = "pdm_wheel:register_pdm_plugin"
 
 [tool.pdm]
 plugins = ["sync-pre-commit-lock", "-e ."]
+ignore_packages = ["ipython", "ipython@8.22.2"]
 
 [tool.pdm.version]
 source = "scm"
@@ -52,85 +54,51 @@ write_template = "__version__: str = \"{}\"\n"
 package-dir = "src"
 includes = ["src", "src/pdm_wheel"]
 excludes = [
-    "tests/.*",
-    "tests/build",
-    "tests/fixtures/.*",
-    "tests/fixtures/wheels",
-    ".venv",
-    ".pdm-python",
+  "tests/.*",
+  "tests/build",
+  "tests/fixtures/.*",
+  "tests/fixtures/wheels",
+  ".venv",
+  ".pdm-python",
 ]
 
 [tool.pdm.scripts]
-fmt = {cmd="black .", help="Run black formatter"}
+fmt = { cmd = "ruff format .", help = "Run ruff formatter" }
 test = "pytest"
-test-cov = {cmd="pytest --junitxml=junit/test-results.xml --cov --cov-report=xml --cov-report=html --cov-report=term-missing", help="Run tests with coverage"}
-doc = {shell = "cd docs && mkdocs serve", help = "Start the dev server for doc preview"}
+test-cov = { cmd = "pytest --junitxml=junit/test-results.xml --cov --cov-report=xml --cov-report=html --cov-report=term-missing", help = "Run tests with coverage" }
+doc = { shell = "cd docs && mkdocs serve", help = "Start the dev server for doc preview" }
 lint = "pre-commit run --all-files"
-lint-mypy = {cmd="mypy src", help="Run mypy type checker"}
-lint-ruff = {cmd="ruff check .", help="Run ruff linter"}
+lint-mypy = { cmd = "mypy src", help = "Run mypy type checker" }
+lint-ruff = { cmd = "ruff check .", help = "Run ruff linter" }
 
 [tool.pdm.dev-dependencies]
-dev = [
-    "black>=22.10.0",
-    "mypy>=1.4",
-    "pylint>=2.15.4",
-    "pytest>=7.2.0",
-    "pytest-cov>=4.0.0",
-    "pdm>=2.4.0",
-    "ruff>=0.0.270",
-    "parver>=0.4",
-    "ipdb>=0.13.13",
-    "tox>=4.14.2",
-    "tox-pdm>=0.7.2",
-    "tox-gh>=1.3.1",
-]
-testtox= [
-    "pytest>=7.2.0",
-    "pytest-cov>=4.0.0",
-    "click>=8.1.7",
-]
-
-[tool.black]
-line-length = 120
-extend-exclude = '''
-/(
-    \.eggs
-  | \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-  | tests/fixtures
-)/
-'''
+testtox = ["pytest>=7.2.0", "pytest-cov>=4.0.0", "click>=8.1.7", "pytest-mock"]
 
 [tool.ruff]
 exclude = [".git", "tests/fixtures/*", "env", "dist", "build", "__pypackages__"]
 line-length = 120
+respect-gitignore = true
 
 [tool.ruff.lint]
 extend-ignore = ["S101", "E501"]
 extend-select = [
-    "E",
-    "F",
-    "W",
-    "TCH",
-    "I",
-    "Q000",
-    "TCH",
-    "I001",
-    "S",
-    "T",
-    "PTH",
-    "PYI",
-    "RET",
-    "D209",
-    "D202",
-    "EM101",
+  "E",
+  "F",
+  "W",
+  "TCH",
+  "I",
+  "Q000",
+  "TCH",
+  "I001",
+  "S",
+  "T",
+  "PTH",
+  "PYI",
+  "RET",
+  "D209",
+  "D202",
+  "EM101",
+  "UP",
 ]
 
 [tool.pytest.ini_options]
@@ -139,10 +107,7 @@ testpaths = ["tests"]
 norecursedirs = "*.egg .eggs dist build docs .tox .git __pycache__ node_modules .venv __pypackages__"
 
 [tool.coverage.paths]
-source =[
-   "src",
-   "*/site-packages"
-]
+source = ["src", "*/site-packages"]
 [tool.coverage.run]
 branch = true
 parallel = true
@@ -154,17 +119,34 @@ source = ["src", "tests"]
 show_missing = true
 precision = 2
 exclude_lines = [
-    "def __repr__",
-    "if TYPE_CHECKING:",
-    "raise AssertionError",
-    "raise NotImplementedError",
-    "if __name__ == .__main__.:",
-    'class .*\bProtocol\):',
-    '@(abc\.)?abstractmethod]',
-    "except ImportError:",
-    "# nocov",
+  "def __repr__",
+  "if TYPE_CHECKING:",
+  "raise AssertionError",
+  "raise NotImplementedError",
+  "if __name__ == .__main__.:",
+  'class .*\bProtocol\):',
+  '@(abc\.)?abstractmethod]',
+  "except ImportError:",
+  "# nocov",
 ]
 
 [tool.mypy]
 files = ["src"]
 strict = true
+
+[dependency-groups]
+dev = [
+  "mypy>=1.4",
+  "pylint>=2.15.4",
+  "pytest>=7.2.0",
+  "pytest-cov>=4.0.0",
+  "pdm>=2.4.0",
+  "ruff>=0.0.270",
+  "parver>=0.4",
+  "ipdb>=0.13.13",
+  "tox>=4.14.2",
+  "tox-pdm>=0.7.2",
+  "tox-gh>=1.3.1",
+  "tox-uv>=1.26.0",
+  "pytest-mock>=3.14.1",
+]
