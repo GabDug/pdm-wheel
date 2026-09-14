@@ -150,7 +150,6 @@ class ExportWheelsCommand(BaseCommand):
         for f_path in os.listdir(wheel_dir):
             if f_path not in ignore:
                 Path.unlink(wheel_dir / f_path)
-        return
 
     def _get_candidates(self, project: Project, options: Namespace) -> dict[str, Candidate]:
         selection = GroupSelection.from_options(project, options)
